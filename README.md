@@ -28,3 +28,7 @@ The .json file must be called data-bot and should have the next data structure:
     ...
   }
 }
+
+### feedback
+
+Some things can improve and optimize, you are authorized to do so :)

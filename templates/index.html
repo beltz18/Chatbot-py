@@ -8,14 +8,17 @@
 </head>
 <body>
   <p>POST JSON to Python</p>
-
   <input type="text" id="data" placeholder="tipea algo">
   <button type="submit" onclick="send_data()">
     Enviar a Python
   </button>
 </body>
-<script src=""></script>
 <script>
-
+  function send_data() {
+    const data  = document.getElementById("data").value
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', "/get-data/"+JSON.stringify(data))
+    xhr.send()
+  }
 </script>
 </html>
