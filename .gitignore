@@ -1,4 +1,6 @@
 /__pycache__/
-/chatbot_project/
+/venv/
 /Data/__pycache__/
 /Data/data-bot.json
+*.pkl
+*.h5

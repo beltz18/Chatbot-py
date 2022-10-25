@@ -12,6 +12,9 @@
   <button type="submit" onclick="send_data()">
     Enviar a Python
   </button>
+  {% if dataBot: %}
+    <p>{{ dataBot }}</p>
+  {% endif %}
 </body>
 <script>
   function send_data() {
@@ -19,6 +22,7 @@
     const xhr = new XMLHttpRequest()
     xhr.open('POST', "/get-data/"+JSON.stringify(data))
     xhr.send()
+    console.log(xhr.responseText)
   }
 </script>
 </html>

@@ -4,13 +4,14 @@ import pickle
 import numpy as np
 import nltk
 
-from abc                         import ABCMeta, abstractmethod
-from nltk.stem                   import WordNetLemmatizer
-from tensorflow.keras.models     import Sequential
-from tensorflow.keras.layers     import Dense, Dropout
-from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.models     import load_model
+from abc              import ABCMeta, abstractmethod
+from nltk.stem        import WordNetLemmatizer
+from keras.models     import Sequential
+from keras.layers     import Dense, Dropout
+from keras.optimizers import SGD
+from keras.models     import load_model
 
+# nltk.download('omw-1.4') Just run once
 nltk.download('punkt',   quiet=True)
 nltk.download('wordnet', quiet=True)
 
@@ -37,9 +38,9 @@ class IAssistant(metaclass=ABCMeta):
 
 class ChatBotAssistant(IAssistant):
   def __init__(self, intents, intent_methods={}, model_name="assistant_model"):
-    self.intents = intents
+    self.intents        = intents
     self.intent_methods = intent_methods
-    self.model_name = model_name
+    self.model_name     = model_name
 
     if intents.endswith(".json"):
       self.load_json_intents(intents)
@@ -50,9 +51,9 @@ class ChatBotAssistant(IAssistant):
     self.intents = json.loads(open(intents).read())
 
   def train_model(self):
-    self.words = []
-    self.classes = []
-    documents = []
+    self.words     = []
+    self.classes   = []
+    documents      = []
     ignore_letters = ['!', '?', ',', '.']
 
     for intent in self.intents['intents']:
@@ -64,28 +65,27 @@ class ChatBotAssistant(IAssistant):
           self.classes.append(intent['tag'])
 
     self.words = [self.lemmatizer.lemmatize(w.lower()) for w in self.words if w not in ignore_letters]
-    self.words = sorted(list(set(self.words)))
+    self.words   = sorted(list(set(self.words)))
     self.classes = sorted(list(set(self.classes)))
 
-    training = []
+    training     = []
     output_empty = [0] * len(self.classes)
 
     for doc in documents:
-      bag = []
+      bag           = []
       word_patterns = doc[0]
       word_patterns = [self.lemmatizer.lemmatize(word.lower()) for word in word_patterns]
       for word in self.words:
         bag.append(1) if word in word_patterns else bag.append(0)
 
-      output_row = list(output_empty)
+      output_row    = list(output_empty)
       output_row[self.classes.index(doc[1])] = 1
       training.append([bag, output_row])
 
     random.shuffle(training)
     training = np.array(training)
-
-    train_x = list(training[:, 0])
-    train_y = list(training[:, 1])
+    train_x  = list(training[:, 0])
+    train_y  = list(training[:, 1])
 
     self.model = Sequential()
     self.model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
@@ -93,9 +93,9 @@ class ChatBotAssistant(IAssistant):
     self.model.add(Dense(64, activation='relu'))
     self.model.add(Dropout(0.5))
     self.model.add(Dense(len(train_y[0]), activation='softmax'))
-    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    sgd        = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     self.model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    self.hist = self.model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
+    self.hist  = self.model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
 
   def save_model(self, model_name=None):
     if model_name is None:
@@ -109,13 +109,13 @@ class ChatBotAssistant(IAssistant):
 
   def load_model(self, model_name=None):
     if model_name is None:
-      self.words = pickle.load(open(f'{self.model_name}_words.pkl', 'rb'))
+      self.words   = pickle.load(open(f'{self.model_name}_words.pkl', 'rb'))
       self.classes = pickle.load(open(f'{self.model_name}_classes.pkl', 'rb'))
-      self.model = load_model(f'{self.model_name}.h5')
+      self.model   = load_model(f'{self.model_name}.h5')
     else:
-      self.words = pickle.load(open(f'{model_name}_words.pkl', 'rb'))
+      self.words   = pickle.load(open(f'{model_name}_words.pkl', 'rb'))
       self.classes = pickle.load(open(f'{model_name}_classes.pkl', 'rb'))
-      self.model = load_model(f'{model_name}.h5')
+      self.model   = load_model(f'{model_name}.h5')
 
   def _clean_up_sentence(self, sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -146,7 +146,7 @@ class ChatBotAssistant(IAssistant):
 
   def _get_response(self, ints, intents_json):
     try:
-      tag = ints[0]['intent']
+      tag             = ints[0]['intent']
       list_of_intents = intents_json['intents']
       for i in list_of_intents:
         if i['tag']  == tag:
@@ -171,4 +171,5 @@ class ChatBotAssistant(IAssistant):
     if ints[0]['intent'] in self.intent_methods.keys():
       self.intent_methods[ints[0]['intent']]()
     else:
-      print(self._get_response(ints, self.intents))
+      response = self._get_response(ints, self.intents)
+      return response
