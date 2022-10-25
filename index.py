@@ -13,17 +13,23 @@ assistant = ChatBotAssistant('Data/data-bot.json', model_name="test_model")
 assistant.train_model()
 assistant.save_model()
 
+@socket.on("message")
+def handle_message(message):
+  print("Received message: "+message)
+  if message != "User connected":
+    send(message, broadcast=True)
+
 @app.route('/')
 def index():
   return render_template('index.html')
 
 @app.route('/get-data/<string:data>', methods=['POST'])
-async def get_data(data):
+def get_data(data):
   message = json.loads(data)
-  dataBot = await assistant.request(message)
-  await asyncio.sleep(10)
+  dataBot = assistant.request(message)
+  asyncio.sleep(10)
   print(dataBot)
-  return await render_template('index.html')
+  return render_template('index.html')
 
 if __name__ == '__main__':
   asyncio.run(app.run(debug=True))

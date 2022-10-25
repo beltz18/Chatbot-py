@@ -5,6 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JS - Python</title>
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/socketio.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/index.js') }}""></script>
 </head>
 <body>
   <p>POST JSON to Python</p>
@@ -12,17 +15,6 @@
   <button type="submit" onclick="send_data()">
     Enviar a Python
   </button>
-  {% if dataBot: %}
-    <p>{{ dataBot }}</p>
-  {% endif %}
+  <div class="message"></div>
 </body>
-<script>
-  function send_data() {
-    const data  = document.getElementById("data").value
-    const xhr = new XMLHttpRequest()
-    xhr.open('POST', "/get-data/"+JSON.stringify(data))
-    xhr.send()
-    console.log(xhr.responseText)
-  }
-</script>
 </html>
