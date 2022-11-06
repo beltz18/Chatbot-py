@@ -11,7 +11,7 @@ from keras.layers     import Dense, Dropout
 from keras.optimizers import SGD
 from keras.models     import load_model
 
-# nltk.download('omw-1.4') Just run once
+nltk.download('omw-1.4')
 nltk.download('punkt',   quiet=True)
 nltk.download('wordnet', quiet=True)
 

@@ -20,4 +20,4 @@ def handle_message(data):
   emit("res", dataBot)
 
 if __name__ == "__main__":
-  socket.run(app)
+  socket.run(app, allow_unsafe_werkzeug=True)

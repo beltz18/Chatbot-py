@@ -1,0 +1,16 @@
+1 - crear el entorno virtual
+  python3 -m venv venv
+
+2 - iniciar el entorno virtual
+  source venv/bin/activate
+
+3 - instalar las dependencias
+  pip install -r requirements.txt
+
+4 - descargar el paquete omw-1.4
+  solo tienes que eliminar el comentario de la linea 14 en main.py
+
+5 - introducir el archivo data-bot.json dentro de la carpeta Data
+
+6 - correr el proyecto
+  python3 index.py
