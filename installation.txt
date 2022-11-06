@@ -1,3 +1,5 @@
+# PARA LINUX:
+
 1 - crear el entorno virtual
   python3 -m venv venv
 
@@ -8,7 +10,8 @@
   pip install -r requirements.txt
 
 4 - descargar el paquete omw-1.4
-  solo tienes que eliminar el comentario de la linea 14 en main.py
+  solo tienes que eliminar el comentario de la linea 14 en main.py,
+  luego de descargarlo, puedes volver a comentar esa linea
 
 5 - introducir el archivo data-bot.json dentro de la carpeta Data
 
